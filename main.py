@@ -11,6 +11,11 @@ def color_enabled(val):
 def clear_cache():
     st.cache_data.clear()
 
+@st.cache_data
+def getData():
+    r = requests.get('https://api.qa.trellis.arizona.edu/ws/rest/v1/util/getScheduledJobs/trellis/') 
+    return r 
+
 # @st.cache_data
 def getJobs():
     st.text(table)
@@ -18,7 +23,7 @@ def getJobs():
  
     if target_field:
         st.markdown(f"🔍 Searching for: `{target_field}`")
-        r = requests.get('https://api.qa.trellis.arizona.edu/ws/rest/v1/util/getScheduledJobs/trellis/') 
+        r = getData()
     
         
         # st.text(r.text)
