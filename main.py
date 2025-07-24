@@ -45,9 +45,10 @@ def getJobs(table, field):
     target_field = f"{table}/{field}" if table and field else None
  
     if target_field:
-        st.markdown(f"🔍 Searching for: `{target_field}`")
+        st.markdown(f"##🔍 Searching for: `{target_field}`")
 
-        birdGIF = "https://tenor.com/view/cute-bird-loader-loader-bird-animation-fungif-loading-gif-18838417"
+        birdGIF = "https://media1.tenor.com/m/dd4FpdbO7cIAAAAd/cute-bird-loader-loader.gif"
+        
 
         placeholder = st.empty()
         placeholder.image(birdGIF, caption="Loading... please wait 🐦")
