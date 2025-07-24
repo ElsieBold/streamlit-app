@@ -40,7 +40,7 @@ def getData():
     return r 
 
 # @st.cache_data
-def getJobs():
+def getJobs(table, field):
     st.text(table)
     target_field = f"{table}/{field}" if table and field else None
  
@@ -105,8 +105,7 @@ def main_app():
     table = st.sidebar.text_input("Enter Salesforce Object name (e.g., Contact)")
     field = st.sidebar.text_input("Enter field name (e.g., EDS_Primary_Affiliation__c)")
 
-
-    st.sidebar.button('Search',  on_click=getJobs, type="primary")
+    st.sidebar.button('Search',  on_click=getJobs, args=(table, field), type="primary")
 
     st.sidebar.button('Clear Cache', on_click=clear_cache)
 
