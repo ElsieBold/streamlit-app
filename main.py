@@ -3,6 +3,29 @@ import pandas as pd
 import requests
 import xml.etree.ElementTree as ET
 import re
+
+# Fetch credentials from secrets
+VALID_USERNAME = st.secrets["username"]
+VALID_PASSWORD = st.secrets["password"]
+
+# Session state to track login
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+def login():
+    st.title("🔒 Please Login")
+
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+
+    if st.button("Login"):
+        if username == VALID_USERNAME and password == VALID_PASSWORD:
+            st.session_state.logged_in = True
+            st.experimental_rerun()
+        else:
+            st.error("❌ Invalid username or password")
+
+
 def color_enabled(val):
     color = 'green' if val=='true' else 'yellow' if val==False else 'red'
     return f'background-color: {color}'
@@ -71,12 +94,24 @@ def getJobs():
     return
 
 
+def main_app():
+    st.sidebar.title('Boomi SF Mapping Search')
 
-st.sidebar.title('Boomi SF Mapping Search')
-
-table = st.sidebar.text_input("Enter Salesforce Object name (e.g., Contact)")
-field = st.sidebar.text_input("Enter field name (e.g., EDS_Primary_Affiliation__c)")
+    table = st.sidebar.text_input("Enter Salesforce Object name (e.g., Contact)")
+    field = st.sidebar.text_input("Enter field name (e.g., EDS_Primary_Affiliation__c)")
 
 
-st.sidebar.button('Search',  on_click=getJobs, type="primary")
-st.sidebar.button('Clear Cache', on_click=clear_cache)
+    st.sidebar.button('Search',  on_click=getJobs, type="primary")
+
+    # birdGIF = "https://tenor.com/view/cute-bird-loader-loader-bird-animation-fungif-loading-gif-18838417"
+
+    # placeholder = st.empty()
+    # placeholder.image(birdGIF, caption="Loading... please wait 🐦")
+    # placeholder.empty()
+    st.sidebar.button('Clear Cache', on_click=clear_cache)
+
+# Render login or app
+if not st.session_state.logged_in:
+    login()
+else:
+    main_app()
