@@ -41,17 +41,16 @@ def getData():
 
 # @st.cache_data
 def getJobs(table, field):
-    st.text(table)
     target_field = f"{table}/{field}" if table and field else None
  
     if target_field:
-        st.markdown(f"##🔍 Searching for: `{target_field}`")
+        st.markdown(f"🔍 Searching for: `{target_field}`")
 
         birdGIF = "https://media1.tenor.com/m/dd4FpdbO7cIAAAAd/cute-bird-loader-loader.gif"
         
 
         placeholder = st.empty()
-        placeholder.image(birdGIF, caption="Loading... please wait 🐦")
+        placeholder.image(birdGIF, caption="Loading... please wait 🐦 It usually takes over a minute")
         
         r = getData()
         placeholder.empty()
