@@ -7,6 +7,7 @@ import re
 # Fetch credentials from secrets
 VALID_USERNAME = st.secrets["username"]
 VALID_PASSWORD = st.secrets["password"]
+st.write("Secrets loaded:", st.secrets.keys())
 
 # Session state to track login
 if "logged_in" not in st.session_state:
@@ -21,7 +22,7 @@ def login():
     if st.button("Login"):
         if username == VALID_USERNAME and password == VALID_PASSWORD:
             st.session_state.logged_in = True
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("❌ Invalid username or password")
 
