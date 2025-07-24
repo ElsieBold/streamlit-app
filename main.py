@@ -50,7 +50,7 @@ def getJobs(table, field):
         
 
         placeholder = st.empty()
-        placeholder.image(birdGIF, caption="Loading... please wait 🐦 It usually takes over a minute")
+        placeholder.image(birdGIF, caption="Loading... please wait 🐦 The initial load takes more than a minute")
         
         r = getData()
         placeholder.empty()
