@@ -40,14 +40,20 @@ def getData():
     return r 
 
 # @st.cache_data
-def getJobs(data):
+def getJobs():
     st.text(table)
     target_field = f"{table}/{field}" if table and field else None
  
     if target_field:
         st.markdown(f"🔍 Searching for: `{target_field}`")
-        r = data
-    
+
+        birdGIF = "https://tenor.com/view/cute-bird-loader-loader-bird-animation-fungif-loading-gif-18838417"
+
+        placeholder = st.empty()
+        placeholder.image(birdGIF, caption="Loading... please wait 🐦")
+        
+        r = getData()
+        placeholder.empty()
         
         # st.text(r.text)
     # st.text(r.content)
@@ -96,18 +102,12 @@ def getJobs(data):
 
 def main_app():
     st.sidebar.title('Boomi SF Mapping Search')
-    data= getData()
     table = st.sidebar.text_input("Enter Salesforce Object name (e.g., Contact)")
     field = st.sidebar.text_input("Enter field name (e.g., EDS_Primary_Affiliation__c)")
 
 
-    st.sidebar.button('Search',  on_click=getJobs, args = (data), type="primary")
+    st.sidebar.button('Search',  on_click=getJobs, type="primary")
 
-    # birdGIF = "https://tenor.com/view/cute-bird-loader-loader-bird-animation-fungif-loading-gif-18838417"
-
-    # placeholder = st.empty()
-    # placeholder.image(birdGIF, caption="Loading... please wait 🐦")
-    # placeholder.empty()
     st.sidebar.button('Clear Cache', on_click=clear_cache)
 
 # Render login or app
