@@ -83,8 +83,14 @@ def getJobs(table, field):
                                 found = True
                                 map_name = root.attrib.get('name')
                                 if map_name:
-                                    maps.append(map_name)
-                                    # st.text("Map name: " + map_name)
+                                    if (mapping.attrib.get('fromNamePath') != None):
+                                        # st.text(map_name + " , " + mapping.attrib.get('fromNamePath') +  " , " + mapping.attrib.get('toNamePath'))
+                                        maps.append([map_name, mapping.attrib.get('fromNamePath'), mapping.attrib.get('toNamePath')])
+                                    else:
+                                        # st.text(map_name + ", " + mapping.attrib.get('fromType')+ "," + mapping.attrib.get('toNamePath'))
+                                        maps.append([map_name, mapping.attrib.get('fromType'), mapping.attrib.get('toNamePath')])
+                                                # maps.append(map_name)
+                                                # st.text("Map name: " + map_name)
                                 break
                     
             except ET.ParseError as e:
@@ -95,7 +101,7 @@ def getJobs(table, field):
 
         if maps:
             st.success("Found mapping to " + target_field)
-            df = pd.DataFrame(maps, columns=["Map Name"])
+            df = pd.DataFrame(maps, columns=["Map Name","From Field", "To Field"])
             st.table(df)
         else:
             st.warning("No maps found.")
