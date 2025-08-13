@@ -40,7 +40,6 @@ def getData():
     api_key = st.secrets["qa-x-api-key"]
     headers = {
         "x-api-key": api_key  
-
     }
     r = requests.get('https://api.qa.trellis.arizona.edu/ws/rest/bft-component-search/v1/sf-mappings/', headers=headers) 
     return r 
@@ -54,10 +53,7 @@ def getJobs(table, field):
  
     if target_field:
         st.markdown(f"🔍 Searching for: `{target_field}`")
-
         birdGIF = "https://media1.tenor.com/m/dd4FpdbO7cIAAAAd/cute-bird-loader-loader.gif"
-        
-
         placeholder = st.empty()
         placeholder.image(birdGIF, caption="Loading... please wait 🐦 The initial load takes more than a minute")
         
@@ -72,25 +68,19 @@ def getJobs(table, field):
                 maps = []
                 components = re.findall(r'(<Component.*?</Component>)', r.text, re.DOTALL)
                 for comp in components:
-                    # st.text("Component length: " + str(len(components))) 
                     root = ET.fromstring(comp)
                     ns = {'bns': 'http://api.platform.boomi.com/'}
                     mappings = root.findall('.//bns:object/Map/Mappings/Mapping', namespaces=ns)
                     for mapping in mappings:
                         if (mapping.attrib.get('toNamePath') != None):
-                        #     st.text("Mapping in mappings: " + mapping.attrib.get('toNamePath'))
                             if mapping.attrib.get('toNamePath').lower() == target_field.lower():
                                 found = True
                                 map_name = root.attrib.get('name')
                                 if map_name:
                                     if (mapping.attrib.get('fromNamePath') != None):
-                                        # st.text(map_name + " , " + mapping.attrib.get('fromNamePath') +  " , " + mapping.attrib.get('toNamePath'))
                                         maps.append([map_name, mapping.attrib.get('fromNamePath'), mapping.attrib.get('toNamePath')])
                                     else:
-                                        # st.text(map_name + ", " + mapping.attrib.get('fromType')+ "," + mapping.attrib.get('toNamePath'))
                                         maps.append([map_name, mapping.attrib.get('fromType'), mapping.attrib.get('toNamePath')])
-                                                # maps.append(map_name)
-                                                # st.text("Map name: " + map_name)
                                 break
                     
             except ET.ParseError as e:
@@ -102,7 +92,7 @@ def getJobs(table, field):
         if maps:
             st.success("Found mapping to " + target_field)
             df = pd.DataFrame(maps, columns=["Map Name","From Field", "To Field"])
-            st.table(df)
+            st.dataframe(df, use_container_width=True)
         else:
             st.warning("No maps found.")
         
@@ -113,10 +103,8 @@ def main_app():
     st.sidebar.title('Boomi SF Mapping Search')
     table = st.sidebar.text_input("Enter Salesforce Object name (e.g., Contact)")
     field = st.sidebar.text_input("Enter field name (e.g., EDS_Primary_Affiliation__c)")
-
     st.sidebar.button('🔍 Search',  on_click=getJobs, args=(table, field), type="primary")
-
-    st.sidebar.button('Clear Cache', on_click=clear_cache)
+    st.sidebar.button('🧹 Clear Cache', on_click=clear_cache)
 
 # Render login or app
 if not st.session_state.logged_in:
