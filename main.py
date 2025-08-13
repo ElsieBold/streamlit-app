@@ -15,8 +15,8 @@ if "logged_in" not in st.session_state:
 def login():
     st.title("🔒 Please Login")
 
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+    username = st.text_input("👤 Username")
+    password = st.text_input("🔑 Password", type="password")
 
     if st.button("Login"):
         if username == VALID_USERNAME and password == VALID_PASSWORD:
@@ -33,15 +33,24 @@ def color_enabled(val):
 
 def clear_cache():
     st.cache_data.clear()
+    st.success("🔄 Cache cleared")
 
 @st.cache_data
 def getData():
-    r = requests.get('https://api.qa.trellis.arizona.edu/ws/rest/v1/util/getScheduledJobs/trellis/') 
+    api_key = st.secrets["qa-x-api-key"]
+    headers = {
+        "x-api-key": api_key  
+
+    }
+    r = requests.get('https://api.qa.trellis.arizona.edu/ws/rest/bft-component-search/v1/sf-mappings/', headers=headers) 
     return r 
 
 # @st.cache_data
 def getJobs(table, field):
     target_field = f"{table}/{field}" if table and field else None
+    if not target_field:
+        st.warning("⚠️ Please enter both table and field names.")
+        return None
  
     if target_field:
         st.markdown(f"🔍 Searching for: `{target_field}`")
@@ -55,9 +64,6 @@ def getJobs(table, field):
         r = getData()
         placeholder.empty()
         
-        # st.text(r.text)
-    # st.text(r.content)
-
         xml_string = r.text
 
         if xml_string:
@@ -75,9 +81,6 @@ def getJobs(table, field):
                         #     st.text("Mapping in mappings: " + mapping.attrib.get('toNamePath'))
                             if mapping.attrib.get('toNamePath').lower() == target_field.lower():
                                 found = True
-                                # st.code(ET.tostring(mapping, encoding='unicode'), language='xml')
-                                # map_name = comp.attrib.get('name')
-                                # st.text("Component name: " + comp)
                                 map_name = root.attrib.get('name')
                                 if map_name:
                                     maps.append(map_name)
@@ -105,7 +108,7 @@ def main_app():
     table = st.sidebar.text_input("Enter Salesforce Object name (e.g., Contact)")
     field = st.sidebar.text_input("Enter field name (e.g., EDS_Primary_Affiliation__c)")
 
-    st.sidebar.button('Search',  on_click=getJobs, args=(table, field), type="primary")
+    st.sidebar.button('🔍 Search',  on_click=getJobs, args=(table, field), type="primary")
 
     st.sidebar.button('Clear Cache', on_click=clear_cache)
 
